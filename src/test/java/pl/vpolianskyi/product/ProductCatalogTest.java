@@ -33,7 +33,7 @@ public class ProductCatalogTest {
         String productid1 = catalog.createProduct("Lego2", "blya");
         String productid2 = catalog.createProduct("Lego3", "gg");
 
-        assertNotEquals(productid2,productid2);
+        assertNotEquals(productid1,productid2);
 
     }
 
@@ -68,6 +68,6 @@ public class ProductCatalogTest {
     }
 
     private ProductCatalog thereIsProductCatalog() {
-        return new ProductCatalog();
+        return new ProductCatalog( new ArrayListProductStorage());
     }
 }

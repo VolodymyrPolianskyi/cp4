@@ -7,34 +7,32 @@ import java.util.List;
 import java.util.UUID;
 
 public class ProductCatalog {
-    private List<Product> products;
 
-    public ProductCatalog() {
-        this.products = new ArrayList<>();
+    ArrayListProductStorage arrayStorage;
+
+    public ProductCatalog( ArrayListProductStorage arrayStorage) {
+        this.arrayStorage = arrayStorage;
     }
 
     public List<Product> allProducts() {
-        return Collections.unmodifiableList(products);
+        return arrayStorage.allProducts();
     }
 
     public String createProduct(String name, String desc) {
         UUID productId = UUID.randomUUID();
 
         var newProduct = new Product(productId, name, desc);
-        products.add(newProduct);
+        arrayStorage.add(newProduct);
 
         return newProduct.getId();
     }
 
     public Product loadProductById(String id) {
-        return products.stream()
-                .filter(product -> product.getId().equals(id))
-                .findFirst()
-                .get();
+        return arrayStorage.loadProductById(id);
     }
 
     public void changePrice(String id, BigDecimal newPrice) {
-        var loaded = loadProductById(id);
+        var loaded = arrayStorage.loadProductById(id);
         loaded.changePrice(newPrice);
     }
 }
