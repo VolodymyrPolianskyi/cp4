@@ -3,55 +3,43 @@ package pl.vpolianskyi.creditcard;
 import java.math.BigDecimal;
 
 public class CreditCard {
-
-    public static final int CREDIT_THERSHOLD = 100;
-    private final String cardNumber;
-    private BigDecimal initialCredit;
+    private BigDecimal creditLimit;
     private BigDecimal balance;
 
-    public CreditCard(String cardNumber) {
-        this.cardNumber = cardNumber;
-    }
+    public void assignCredit(BigDecimal creditLimit) {
+        if (isCreditAlreadyAssigned()) {
+            throw new CreditAlreadyAssignedException();
+        }
 
-    public String getNumber() {
-        return cardNumber;
-    }
-
-    public void assignCredit(BigDecimal initialCredit) {
-        if(isCreditBelowThreshold(initialCredit)){
+        if (isCreditBelowThreshold(creditLimit)) {
             throw new CreditBelowThresholdException();
         }
 
-        if(isCreditAssigned()){
-            throw new CreditCantBeAssignedTwice();
-        }
-
-        this.initialCredit = initialCredit;
-        this.balance = initialCredit;
+        this.creditLimit = creditLimit;
+        this.balance = creditLimit;
     }
 
-    private boolean isCreditAssigned() {
-        return this.initialCredit != null;
+    private boolean isCreditAlreadyAssigned() {
+        return this.creditLimit != null;
     }
 
-    private static boolean isCreditBelowThreshold(BigDecimal initialCredit) {
-        return BigDecimal.valueOf(CREDIT_THERSHOLD).compareTo(initialCredit) > 0;
-    }
-
-    public BigDecimal getInitialCredit() {
-        return initialCredit;
+    private boolean isCreditBelowThreshold(BigDecimal creditLimit) {
+        return BigDecimal.valueOf(100).compareTo(creditLimit) > 0;
     }
 
     public BigDecimal getBalance() {
         return balance;
     }
 
-    public void withdraw(BigDecimal amount) {
-        if(this.balance.compareTo(amount) >= 0 ){
-            this.balance = this.balance.subtract(amount);
-        }else {
-            throw new NotEnoughException();
+    public void pay(BigDecimal money) {
+        if (!canAfford(money)) {
+            throw new NotEnoughMoneyException();
         }
 
+        this.balance = this.balance.subtract(money);
+    }
+
+    private boolean canAfford(BigDecimal money) {
+        return this.balance.subtract(money).compareTo(BigDecimal.ZERO) > 0;
     }
 }
